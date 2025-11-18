@@ -22,7 +22,6 @@ final class UserController extends AbstractController
         private ValidatorInterface $validator
     ) {}
 
-    /** POST /api/register */
     #[Route('/api/register', name: 'api_register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
     {
@@ -69,7 +68,6 @@ final class UserController extends AbstractController
         return $this->json($user, 201, [], ['groups' => ['user:read']]);
     }
 
-    /** DELETE /api/delete/{id} */
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/api/delete/{id}', name: 'api_user_delete', methods: ['DELETE'])]
     public function delete(UserRepository $repo, EntityManagerInterface $em, int $id): JsonResponse
@@ -90,7 +88,6 @@ final class UserController extends AbstractController
         ], 200);
     }
 
-    /** GET /api/user */
     #[Route('/api/user', name: 'api_user', methods: ['GET'])]
     public function me(): JsonResponse
     {

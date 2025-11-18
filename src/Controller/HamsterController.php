@@ -21,7 +21,6 @@ final class HamsterController extends AbstractController
         private HamsterManager $hamsterManager
     ) {}
 
-    /** GET /api/hamsters */
     #[Route('/hamsters', name: 'api_hamsters_list', methods: ['GET'])]
     public function getAllHamsters(): JsonResponse
     {
@@ -38,7 +37,6 @@ final class HamsterController extends AbstractController
         ], context: ['groups' => ['hamster:list']]);
     }
 
-    /** GET /api/hamsters/{id} */
     #[Route('/hamsters/{id}', name: 'api_hamsters_detail', methods: ['GET'])]
     public function getHamsterById(int $id): JsonResponse
     {
@@ -65,7 +63,6 @@ final class HamsterController extends AbstractController
         ], context: ['groups' => ['hamster:read']]);
     }
 
-    /** POST /api/hamsters/reproduce */
     #[Route('/hamsters/reproduce', name: 'api_hamsters_reproduce', methods: ['POST'])]
     public function reproduce(Request $request): JsonResponse
     {
@@ -83,11 +80,11 @@ final class HamsterController extends AbstractController
 
         $hamster1 = $this->hamsterRepository->find($data['idHamster1']);
         $hamster2 = $this->hamsterRepository->find($data['idHamster2']);
-
+        // Vérifier que les deux hamsters sont trouvés
         if (!$hamster1 || !$hamster2) {
             return $this->json(['error' => 'Un des hamsters n\'a pas été trouvé'], 404);
         }
-
+        // Vérifier que les deux hamsters appartiennent à l'utilisateur
         if ($hamster1->getOwner()?->getId() !== $user->getId() || $hamster2->getOwner()?->getId() !== $user->getId()) {
             return $this->json(['error' => 'l\'un des hamsters n\'appartient pas à l\'utilisateur'], 403);
         }
@@ -110,7 +107,6 @@ final class HamsterController extends AbstractController
         return $this->json($result['baby'], 201, [], ['groups' => ['hamster:read']]);
     }
 
-    /** POST /api/hamsters/{id}/feed */
     #[Route('/hamsters/{id}/feed', name: 'api_hamsters_feed', methods: ['POST'])]
     public function feed(int $id): JsonResponse
     {
@@ -148,7 +144,6 @@ final class HamsterController extends AbstractController
         ]);
     }
 
-    /** POST /api/hamsters/{id}/sell */
     #[Route('/hamsters/{id}/sell', name: 'api_hamsters_sell', methods: ['POST'])]
     public function sell(int $id): JsonResponse
     {
@@ -173,7 +168,6 @@ final class HamsterController extends AbstractController
         return $this->json(['message' => 'Hamster vendu avec succès', 'gold' => $user->getGold()]);
     }
 
-    /** POST /api/hamsters/sleep/{nbDays} */
     #[Route('/hamsters/sleep/{nbDays}', name: 'api_hamsters_sleep', methods: ['POST'])]
     public function sleep(int $nbDays): JsonResponse
     {
@@ -218,7 +212,6 @@ final class HamsterController extends AbstractController
         ]);
     }
 
-    /** PUT /api/hamsters/{id}/rename */
     #[Route('/hamsters/{id}/rename', name: 'api_hamsters_rename', methods: ['PUT'])]
     public function rename(int $id, Request $request): JsonResponse
     {
