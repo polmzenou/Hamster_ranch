@@ -8,7 +8,7 @@ API REST Symfony pour la gestion d'un système de hamsters avec authentification
 - **Composer** >= 2.0
 - **MySQL** ou **PostgreSQL** (ou autre base de données supportée par Doctrine)
 - **OpenSSL** (pour la génération des clés JWT)
-- **Symfony CLI** (optionnel, recommandé)
+- **Symfony**
 
 ## Installation
 
