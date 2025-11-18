@@ -404,9 +404,8 @@ php bin/console cache:clear
 ### JWT
 ```bash
 # Générer les clés JWT
-php bin/console lexik:jwt:generate-keypair
-```
-
+openssl genpkey -algorithm RSA -aes256 -out config/jwt/private.pem -pkeyopt rsa_keygen_bits:4096
+openssl pkey -in config/jwt/private.pem -pubout -out config/jwt/public.pem```
 ---
 
 ## Structure du projet
