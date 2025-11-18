@@ -12,6 +12,7 @@ use App\Repository\HamsterRepository;
 use App\Service\HamsterManager;
 use Doctrine\ORM\EntityManagerInterface;
 
+#[Route('/api')]
 final class HamsterController extends AbstractController
 {
     public function __construct(
@@ -21,7 +22,7 @@ final class HamsterController extends AbstractController
     ) {}
 
     /** GET /api/hamsters */
-    #[Route('/api/hamsters', name: 'api_hamsters_list', methods: ['GET'])]
+    #[Route('/hamsters', name: 'api_hamsters_list', methods: ['GET'])]
     public function getAllHamsters(): JsonResponse
     {
         /** @var User $user */
@@ -38,7 +39,7 @@ final class HamsterController extends AbstractController
     }
 
     /** GET /api/hamsters/{id} */
-    #[Route('/api/hamsters/{id}', name: 'api_hamsters_detail', methods: ['GET'])]
+    #[Route('/hamsters/{id}', name: 'api_hamsters_detail', methods: ['GET'])]
     public function getHamsterById(int $id): JsonResponse
     {
         /** @var User $user */
@@ -65,7 +66,7 @@ final class HamsterController extends AbstractController
     }
 
     /** POST /api/hamsters/reproduce */
-    #[Route('/api/hamsters/reproduce', name: 'api_hamsters_reproduce', methods: ['POST'])]
+    #[Route('/hamsters/reproduce', name: 'api_hamsters_reproduce', methods: ['POST'])]
     public function reproduce(Request $request): JsonResponse
     {
         /** @var User $user */
@@ -110,7 +111,7 @@ final class HamsterController extends AbstractController
     }
 
     /** POST /api/hamsters/{id}/feed */
-    #[Route('/api/hamsters/{id}/feed', name: 'api_hamsters_feed', methods: ['POST'])]
+    #[Route('/hamsters/{id}/feed', name: 'api_hamsters_feed', methods: ['POST'])]
     public function feed(int $id): JsonResponse
     {
         /** @var User $user */
@@ -148,7 +149,7 @@ final class HamsterController extends AbstractController
     }
 
     /** POST /api/hamsters/{id}/sell */
-    #[Route('/api/hamsters/{id}/sell', name: 'api_hamsters_sell', methods: ['POST'])]
+    #[Route('/hamsters/{id}/sell', name: 'api_hamsters_sell', methods: ['POST'])]
     public function sell(int $id): JsonResponse
     {
         /** @var User $user */
@@ -172,8 +173,8 @@ final class HamsterController extends AbstractController
         return $this->json(['message' => 'Hamster vendu avec succès', 'gold' => $user->getGold()]);
     }
 
-    /** POST /api/hamster/sleep/{nbDays} */
-    #[Route('/api/hamster/sleep/{nbDays}', name: 'api_hamsters_sleep', methods: ['POST'])]
+    /** POST /api/hamsters/sleep/{nbDays} */
+    #[Route('/hamsters/sleep/{nbDays}', name: 'api_hamsters_sleep', methods: ['POST'])]
     public function sleep(int $nbDays): JsonResponse
     {
         /** @var User $user */
@@ -218,7 +219,7 @@ final class HamsterController extends AbstractController
     }
 
     /** PUT /api/hamsters/{id}/rename */
-    #[Route('/api/hamsters/{id}/rename', name: 'api_hamsters_rename', methods: ['PUT'])]
+    #[Route('/hamsters/{id}/rename', name: 'api_hamsters_rename', methods: ['PUT'])]
     public function rename(int $id, Request $request): JsonResponse
     {
         /** @var User $user */
