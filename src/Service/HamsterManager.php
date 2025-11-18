@@ -10,7 +10,7 @@ class HamsterManager
 {
     public function __construct(private EntityManagerInterface $em) {}
 
-    /** Effets secondaires après chaque action */
+    /** Effets de transaction après chaque action */
     public function applyTransactionEffects(User $user): void
     {
         foreach ($user->getHamsters() as $h) {
@@ -31,11 +31,11 @@ class HamsterManager
             return ['error' => 'Le hamster n\'a pas faim, il est rassasié !'];
         }
 
-        // Calculer le coût AVANT d'appliquer les effets
+        // Calculer le coût avant d'appliquer les effets
         $initialHunger = $hamster->getHunger();
         $cost = 100 - $initialHunger;
 
-        // Le coût ne peut pas être négatif
+        // Le coût ne peut pas être négatif, sinon on le met à 0
         if ($cost < 0) {
             $cost = 0;
         }
@@ -44,7 +44,7 @@ class HamsterManager
             return ['error' => 'Pas assez de gold'];
         }
 
-        // Appliquer les effets de transaction à tous les hamsters
+        // Appliquer les effets de transaction à tous les hamsters de l'utilisateur
         $this->applyTransactionEffects($user);
         
         // Maintenant nourrir le hamster (après les effets, donc il garde 100 de hunger)
