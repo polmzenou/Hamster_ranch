@@ -440,8 +440,8 @@ openssl pkey -in config/jwt/private.pem -pubout -out config/jwt/public.pem```
 ## Dépannage
 
 ### Erreur "Invalid JWT Token"
-- Vérifiez que les clés JWT sont générées : `php bin/console lexik:jwt:generate-keypair`
-- Vérifiez le format du header : `Authorization: Bearer {token}` (avec un espace après "Bearer")
+- Vérifiez que les clés JWT sont générées
+- Vérifiez le format du header : `Authorization: Bearer {token}`
 
 ### Erreur de connexion à la base de données
 - Vérifiez votre `DATABASE_URL` dans `.env.local`
