@@ -2,7 +2,7 @@
 
 API REST Symfony pour la gestion d'un système de hamsters avec authentification JWT.
 
-## 📋 Prérequis
+## Prérequis
 
 - **PHP** >= 8.2
 - **Composer** >= 2.0
@@ -10,7 +10,7 @@ API REST Symfony pour la gestion d'un système de hamsters avec authentification
 - **OpenSSL** (pour la génération des clés JWT)
 - **Symfony CLI** (optionnel, recommandé)
 
-## 🚀 Installation
+## Installation
 
 ### 1. Cloner le projet
 
@@ -49,7 +49,8 @@ JWT_PASSPHRASE=your_passphrase_here
 ### 4. Générer les clés JWT
 
 ```bash
-php bin/console lexik:jwt:generate-keypair
+openssl genpkey -algorithm RSA -aes256 -out config/jwt/private.pem -pkeyopt rsa_keygen_bits:4096
+openssl pkey -in config/jwt/private.pem -pubout -out config/jwt/public.pem
 ```
 
 Cette commande génère les clés privée et publique nécessaires pour l'authentification JWT dans le dossier `config/jwt/`.
@@ -73,10 +74,10 @@ php bin/console doctrine:fixtures:load
 ```
 
 Cette commande crée :
-- **1 utilisateur admin** : `admin@admin.com` / `password` (1000 gold)
+- **1 utilisateur admin** : `admin@admin.com` / `password` (1000 gold, 2 hamsters)
 - **1 utilisateur normal** : `test@test.com` / `password` (500 gold, 4 hamsters)
 
-## 🏃 Démarrer le serveur
+## Démarrer le serveur
 
 ### Avec Symfony CLI (recommandé)
 
@@ -92,7 +93,7 @@ php -S 127.0.0.1:8000 -t public
 
 L'API sera accessible sur : `http://127.0.0.1:8000`
 
-## 📚 Documentation de l'API
+## Documentation de l'API
 
 ### Base URL
 
@@ -129,7 +130,7 @@ Authorization: Bearer {votre_token}
 
 ---
 
-## 🔐 Routes d'authentification
+## Routes d'authentification
 
 ### POST /api/register
 Inscription d'un nouvel utilisateur
@@ -196,7 +197,7 @@ Supprime un utilisateur (Admin uniquement)
 
 ---
 
-## 🐹 Routes de gestion des hamsters
+## Routes de gestion des hamsters
 
 ### GET /api/hamsters
 Récupère tous les hamsters de l'utilisateur connecté
@@ -345,7 +346,7 @@ Renomme un hamster
 
 ---
 
-## 🎮 Règles du jeu
+## Règles du jeu
 
 ### Hamsters
 - **Name** : Minimum 2 caractères
@@ -365,7 +366,7 @@ Après chaque action (feed, sell, reproduce), tous les hamsters de l'utilisateur
 
 ---
 
-## 🧪 Comptes de test
+## Comptes de test
 
 Après avoir chargé les fixtures :
 
@@ -373,6 +374,7 @@ Après avoir chargé les fixtures :
 - Email : `admin@admin.com`
 - Password : `password`
 - Gold : 1000
+- Hamsters : 2 (1 mâle, 1 femelle)
 
 **User :**
 - Email : `test@test.com`
@@ -382,7 +384,7 @@ Après avoir chargé les fixtures :
 
 ---
 
-## 🛠️ Commandes utiles
+## Commandes utiles
 
 ### Base de données
 ```bash
@@ -413,7 +415,7 @@ php bin/console lexik:jwt:generate-keypair
 
 ---
 
-## 📝 Structure du projet
+## Structure du projet
 
 ```
 ├── config/
@@ -433,7 +435,7 @@ php bin/console lexik:jwt:generate-keypair
 
 ---
 
-## ⚠️ Notes importantes
+## Notes importantes
 
 1. **Sécurité JWT** : Ne partagez jamais votre `JWT_PASSPHRASE` et gardez les clés privées secrètes
 2. **Base de données** : Assurez-vous que la base de données existe avant d'exécuter les migrations
@@ -442,7 +444,7 @@ php bin/console lexik:jwt:generate-keypair
 
 ---
 
-## 🐛 Dépannage
+## Dépannage
 
 ### Erreur "Invalid JWT Token"
 - Vérifiez que les clés JWT sont générées : `php bin/console lexik:jwt:generate-keypair`
@@ -459,17 +461,17 @@ php bin/console lexik:jwt:generate-keypair
 
 ---
 
-## 📄 Licence
+## Licence
 
 Proprietary
 
 ---
 
-## 👥 Auteur
+## Auteur
 
-Paul Mehr
+polmzenou
 
 ---
 
-**Bon développement ! 🚀**
+**Bon développement !**
 

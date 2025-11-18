@@ -26,6 +26,7 @@ class AppFixtures extends Fixture
         $user = $this->createUser('test@test.com', ['ROLE_USER'], 'password', 500);
         $manager->persist($user);
 
+        // Créer 4 hamsters pour l'utilisateur normal
         $genders = ['m','m','f','f'];
         foreach ($genders as $i => $g) {
             $h = new Hamster();
@@ -35,6 +36,19 @@ class AppFixtures extends Fixture
             $h->setAge(0);
             $h->setActive(true);
             $h->setOwner($user);
+            $manager->persist($h);
+        }
+
+        // Créer 2 hamsters pour l'admin (1 mâle, 1 femelle)
+        $adminGenders = ['m', 'f'];
+        foreach ($adminGenders as $i => $g) {
+            $h = new Hamster();
+            $h->setName('AdminHamster'.$i);
+            $h->setGender($g);
+            $h->setHunger(100);
+            $h->setAge(0);
+            $h->setActive(true);
+            $h->setOwner($admin);
             $manager->persist($h);
         }
 
