@@ -79,16 +79,10 @@ Cette commande crée :
 
 ## Démarrer le serveur
 
-### Avec Symfony CLI (recommandé)
+### Avec Symfony (recommandé)
 
 ```bash
 symfony server:start
-```
-
-### Avec PHP built-in server
-
-```bash
-php -S 127.0.0.1:8000 -t public
 ```
 
 L'API sera accessible sur : `http://127.0.0.1:8000`
