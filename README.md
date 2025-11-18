@@ -15,7 +15,7 @@ API REST Symfony pour la gestion d'un système de hamsters avec authentification
 ### 1. Cloner le projet
 
 ```bash
-git clone <url-du-repo>
+git clone https://github.com/polmzenou/Hamster_ranch.git
 cd FullstackAPI_paul_mehr
 ```
 
