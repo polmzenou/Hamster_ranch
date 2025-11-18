@@ -29,23 +29,23 @@ final class UserController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['email']) || !isset($data['password'])) {
-            return $this->json(['error' => 'Missing required fields: email, password'], 400);
+            return $this->json(['error' => 'Champs email et password manquants'], 400);
         }
 
         $email = trim($data['email']);
         $password = $data['password'];
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return $this->json(['error' => 'Invalid email format'], 400);
+            return $this->json(['error' => 'Format email invalide'], 400);
         }
 
         if (strlen($password) < 8) {
-            return $this->json(['error' => 'Password must be at least 8 characters'], 400);
+            return $this->json(['error' => 'Le mot de passe doit contenir au moins 8 caractères'], 400);
         }
 
         $existingUser = $this->userRepository->findOneBy(['email' => $email]);
         if ($existingUser) {
-            return $this->json(['error' => 'Email already exists'], 409);
+            return $this->json(['error' => 'Email déjà existant'], 409);
         }
 
         $user = new User();
@@ -60,7 +60,7 @@ final class UserController extends AbstractController
             foreach ($errors as $error) {
                 $errorMessages[] = $error->getPropertyPath() . ': ' . $error->getMessage();
             }
-            return $this->json(['error' => 'Validation failed', 'details' => $errorMessages], 400);
+            return $this->json(['error' => 'Validation échouée', 'details' => $errorMessages], 400);
         }
 
         $this->em->persist($user);
@@ -78,7 +78,7 @@ final class UserController extends AbstractController
         
         if (!$user) {
             return $this->json([
-                'error' => 'User not found'
+                'error' => 'Utilisateur non trouvé'
             ], 404);
         }
 
@@ -86,7 +86,7 @@ final class UserController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'message' => 'User deleted successfully'
+            'message' => 'Utilisateur supprimé avec succès'
         ], 200);
     }
 
@@ -98,7 +98,7 @@ final class UserController extends AbstractController
         $user = $this->getUser();
         
         if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], 401);
+            return $this->json(['error' => 'Non-autorisé'], 401);
         }
 
         return $this->json([

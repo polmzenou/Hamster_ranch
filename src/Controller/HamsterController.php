@@ -27,7 +27,7 @@ final class HamsterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], 401);
+            return $this->json(['error' => 'Non-autorisé'], 401);
         }
 
         $listHamster = $user->getHamsters()->toArray();
@@ -44,19 +44,19 @@ final class HamsterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], 401);
+            return $this->json(['error' => 'Non-autorisé'], 401);
         }
 
         $hamster = $this->hamsterRepository->find($id);
 
         if (!$hamster) {
-            return $this->json(['error' => 'Hamster not found'], 404);
+            return $this->json(['error' => 'Hamster non trouvé'], 404);
         }
 
         // Vérifier si l'utilisateur est admin ou propriétaire
         $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
         if (!$isAdmin && $hamster->getOwner()?->getId() !== $user->getId()) {
-            return $this->json(['error' => 'Forbidden - You can only view your own hamsters'], 403);
+            return $this->json(['error' => 'Interdit - Vous ne pouvez voir que vos propres hamsters'], 403);
         }
 
         return $this->json([
@@ -71,13 +71,13 @@ final class HamsterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], 401);
+            return $this->json(['error' => 'Non-autorisé'], 401);
         }
 
         $data = json_decode($request->getContent(), true);
         
         if (!isset($data['idHamster1']) || !isset($data['idHamster2'])) {
-            return $this->json(['error' => 'Missing required fields: idHamster1, idHamster2'], 400);
+            return $this->json(['error' => 'Un des idHamsters n\'a pas été trouvé'], 400);
         }
 
         $hamster1 = $this->hamsterRepository->find($data['idHamster1']);
@@ -89,6 +89,15 @@ final class HamsterController extends AbstractController
 
         if ($hamster1->getOwner()?->getId() !== $user->getId() || $hamster2->getOwner()?->getId() !== $user->getId()) {
             return $this->json(['error' => 'l\'un des hamsters n\'appartient pas à l\'utilisateur'], 403);
+        }
+
+        // Vérifier que les deux hamsters sont actifs
+        if (!$hamster1->isActive()) {
+            return $this->json(['error' => 'Le premier hamster n\'est pas actif'], 400);
+        }
+
+        if (!$hamster2->isActive()) {
+            return $this->json(['error' => 'Le deuxième hamster n\'est pas actif'], 400);
         }
 
         $result = $this->hamsterManager->reproduce($hamster1, $hamster2, $user);
@@ -107,17 +116,17 @@ final class HamsterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], 401);
+            return $this->json(['error' => 'Non-autorisé'], 401);
         }
 
         $hamster = $this->hamsterRepository->find($id);
         
         if (!$hamster) {
-            return $this->json(['error' => 'Hamster not found'], 404);
+            return $this->json(['error' => 'Hamster non trouvé '], 404);
         }
 
         if ($hamster->getOwner()?->getId() !== $user->getId()) {
-            return $this->json(['error' => 'Forbidden'], 403);
+            return $this->json(['error' => 'Interdit'], 403);
         }
 
         $result = $this->hamsterManager->feed($hamster, $user);
@@ -145,22 +154,22 @@ final class HamsterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], 401);
+            return $this->json(['error' => 'Non-autorisé'], 401);
         }
 
         $hamster = $this->hamsterRepository->find($id);
         
         if (!$hamster) {
-            return $this->json(['error' => 'Hamster not found'], 404);
+            return $this->json(['error' => 'Hamster non trouvé'], 404);
         }
 
         if ($hamster->getOwner()?->getId() !== $user->getId()) {
-            return $this->json(['error' => 'Forbidden'], 403);
+            return $this->json(['error' => 'Interdit'], 403);
         }
 
         $this->hamsterManager->sell($hamster, $user);
 
-        return $this->json(['message' => 'Hamster sold', 'gold' => $user->getGold()]);
+        return $this->json(['message' => 'Hamster vendu avec succès', 'gold' => $user->getGold()]);
     }
 
     /** POST /api/hamster/sleep/{nbDays} */
@@ -170,15 +179,15 @@ final class HamsterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], 401);
+            return $this->json(['error' => 'Non-autorisé'], 401);
         }
 
         if ($nbDays < 0) {
-            return $this->json(['error' => 'nbDays must be positive or zero'], 400);
+            return $this->json(['error' => 'nbDays doit être positif ou nul'], 400);
         }
 
         if ($nbDays === 0) {
-            return $this->json(['message' => 'No time passed', 'nbDays' => 0]);
+            return $this->json(['message' => 'Aucun temps passé', 'nbDays' => 0]);
         }
 
         $hamsters = $user->getHamsters();
@@ -201,7 +210,7 @@ final class HamsterController extends AbstractController
         $this->em->flush();
 
         return $this->json([
-            'message' => 'All hamsters aged',
+            'message' => 'Tous les hamsters ont vieillis de ' . $nbDays . ' jours',
             'nbDays' => $nbDays,
             'affectedHamsters' => $affectedCount,
             'inactiveHamsters' => $inactiveCount
@@ -215,36 +224,36 @@ final class HamsterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], 401);
+            return $this->json(['error' => 'Non-autorisé'], 401);
         }
 
         $hamster = $this->hamsterRepository->find($id);
         
         if (!$hamster) {
-            return $this->json(['error' => 'Hamster not found'], 404);
+            return $this->json(['error' => 'Hamster non trouvé'], 404);
         }
 
         // Vérifier si l'utilisateur est admin ou propriétaire
         $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
         if (!$isAdmin && $hamster->getOwner()?->getId() !== $user->getId()) {
-            return $this->json(['error' => 'Forbidden - You can only rename your own hamsters'], 403);
+            return $this->json(['error' => 'Interdit - Vous ne pouvez renommer que vos propres hamsters'], 403);
         }
 
         $data = json_decode($request->getContent(), true);
         
         if (!isset($data['name'])) {
-            return $this->json(['error' => 'Missing required field: name'], 400);
+            return $this->json(['error' => 'Champ nom manquant'], 400);
         }
 
         $name = trim($data['name']);
         if (strlen($name) < 2) {
-            return $this->json(['error' => 'Name must be at least 2 characters'], 400);
+            return $this->json(['error' => 'Le nom doit contenir au moins 2 caractères'], 400);
         }
 
         // Vérifier si le nom n'a pas changé
         if ($hamster->getName() === $name) {
             return $this->json([
-                'message' => 'Name unchanged',
+                'message' => 'Nom inchangé',
                 'hamster' => $hamster
             ], 200, [], ['groups' => ['hamster:read']]);
         }
@@ -253,7 +262,7 @@ final class HamsterController extends AbstractController
         $this->em->flush();
 
         return $this->json([
-            'message' => 'Hamster renamed successfully',
+            'message' => 'Hamster renommé avec succès',
             'hamster' => $hamster
         ], 200, [], ['groups' => ['hamster:read']]);
     }
