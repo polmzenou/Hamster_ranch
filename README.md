@@ -461,17 +461,7 @@ php bin/console lexik:jwt:generate-keypair
 
 ---
 
-## Licence
-
-Proprietary
-
----
-
 ## Auteur
 
 polmzenou
-
----
-
-**Bon développement !**
 

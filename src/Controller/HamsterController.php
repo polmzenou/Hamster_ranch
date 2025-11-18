@@ -126,7 +126,7 @@ final class HamsterController extends AbstractController
         }
 
         if ($hamster->getOwner()?->getId() !== $user->getId()) {
-            return $this->json(['error' => 'Interdit'], 403);
+            return $this->json(['error' => 'Interdit, ce hamster ne vous appartient pas ?'], 403);
         }
 
         $result = $this->hamsterManager->feed($hamster, $user);

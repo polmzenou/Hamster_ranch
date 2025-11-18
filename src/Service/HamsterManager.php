@@ -28,7 +28,7 @@ class HamsterManager
     {
         // Si le hamster a déjà 100 de hunger, pas besoin de le nourrir
         if ($hamster->getHunger() >= 100) {
-            return ['error' => 'Le hamster n\'a pas faim'];
+            return ['error' => 'Le hamster n\'a pas faim, il est rassasié !'];
         }
 
         // Calculer le coût AVANT d'appliquer les effets
@@ -59,26 +59,10 @@ class HamsterManager
     /** Vendre un hamster */
     public function sell(Hamster $hamster, User $user): void
     {
-        // Appliquer les effets de transaction AVANT de supprimer le hamster
-        // (pour que le hamster vendu ne vieillisse pas)
-        foreach ($user->getHamsters() as $h) {
-            // Exclure le hamster vendu des effets
-            if ($h->getId() === $hamster->getId()) {
-                continue;
-            }
-            $h->setAge($h->getAge() + 5);
-            $h->setHunger($h->getHunger() - 5);
-
-            if ($h->getAge() > 500 || $h->getHunger() < 0) {
-                $h->setActive(false);
-            }
-        }
-
-        // Ajouter 300 gold à l'utilisateur
         $user->setGold($user->getGold() + 300);
 
-        // Supprimer le hamster de l'inventaire
         $this->em->remove($hamster);
+        $this->applyTransactionEffects($user);
 
         $this->em->flush();
     }
