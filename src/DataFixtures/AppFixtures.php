@@ -18,6 +18,11 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        // Créer un utilisateur admin
+        $admin = $this->createUser('admin@admin.com', ['ROLE_ADMIN'], 'password', 1000);
+        $manager->persist($admin);
+
+        // Créer un utilisateur normal
         $user = $this->createUser('test@test.com', ['ROLE_USER'], 'password', 500);
         $manager->persist($user);
 
@@ -29,12 +34,9 @@ class AppFixtures extends Fixture
             $h->setHunger(100);
             $h->setAge(0);
             $h->setActive(true);
-            $h->setUserId($user);
+            $h->setOwner($user);
             $manager->persist($h);
         }
-
-        // $product = new Product();
-        // $manager->persist($product);
 
         $manager->flush();
     }

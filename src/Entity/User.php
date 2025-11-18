@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -16,10 +17,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read', 'user:list', 'hamster:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type:"string", length:180, unique:true)]
     #[Assert\Email]
+    #[Groups(['user:read', 'user:list', 'hamster:read'])]
     private ?string $email = null;
 
     #[ORM\Column(type:"json")]
@@ -30,12 +33,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(type:"integer")]
+    #[Groups(['user:read', 'user:list'])]
     private ?int $gold = null;
 
     /**
      * @var Collection<int, Hamster>
      */
-    #[ORM\OneToMany(targetEntity: Hamster::class, mappedBy: 'o', cascade:["persist","remove"])]
+    #[ORM\OneToMany(targetEntity: Hamster::class, mappedBy: 'owner', cascade:["persist","remove"])]
+    #[Groups(['user:read'])]
     private Collection $hamsters;
 
     public function __construct()
@@ -128,7 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->hamsters->contains($hamster)) {
             $this->hamsters->add($hamster);
-            $hamster->setUserId($this);
+            $hamster->setOwner($this);
         }
 
         return $this;
@@ -138,8 +143,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->hamsters->removeElement($hamster)) {
             // set the owning side to null (unless already changed)
-            if ($hamster->getUserId() === $this) {
-                $hamster->setUserId(null);
+            /** @var Hamster $hamster */
+            if ($hamster->getOwner() === $this) {
+                $hamster->setOwner(null);
             }
         }
 
