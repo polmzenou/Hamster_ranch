@@ -132,7 +132,7 @@ Inscription d'un nouvel utilisateur
 **Body :**
 ```json
 {
-  "email": "user@example.com",
+  "email": "user@exampledemail.com",
   "password": "motdepasse"
 }
 ```
